@@ -6,17 +6,33 @@
 
 let users = (state = [], action) => {
     switch(action.type){
-        case 'SELECT_USER':
-            console.log('Selecting user ');
-            let newUserState = state.map(user => {
+        case 'FETCH_USERS_SUCCESS':
+            
+            return [...action.users, ...state];
+        case 'ADD_TODO':
+            let cloneArray = state.slice(0);
+            // let cloneArray = new Array(state);
+            console.log(state.length);
+            // for(let i = 0; i < cloneArray.length; i++){
+            //     if(state[i].id === action.userId){
+            //         state[i].todoList.push(action.task);
+            //     }
+            // }
+            // cloneArray.push(action.task);
+            // cloneArray.push(action['task-']);
+            // cloneArray.push(action[task]); // does not work..
+
+            cloneArray.forEach(user => {
+                console.log(`${user.id} === ${action.userId}`);
                 if(user.id === action.userId){
-                    return {...user, selected: true};
+                    user.todoList.push(action.task);
                 }
-                else {
-                    return {...user, selected: false};
-                }
-            });
-            return newUserState;
+            }); 
+            //versus
+            // let cloneArray = state.map(user => {
+            //     return user;
+            // }); // creates a new array
+            return cloneArray;
         default:
         return state;
     }

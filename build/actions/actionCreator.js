@@ -2,12 +2,12 @@
  * actionCreator is the file that gives Redux a blueprint of what each event looks like.
  */
 
-// select a user
-export let selectUser = (userId) => {
-    console.log('dispatch select user');
+// only new method needed
+export let fetchUsers = (users) => {
+    console.log('dispatch fetch user success');
     return {
-        type: 'SELECT_USER',
-        userId
+        type: 'FETCH_USERS_SUCCESS',
+        users
     };
 }
 

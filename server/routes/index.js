@@ -4,24 +4,13 @@
  */
 'use strict';
 import {createTask} from '../services/taskService';
-import {createUser} from '../services/userService';
+import * as UserService from '../services/userService';
 
 export default (app) => {
 
     // We can create an API by this.
     app.get('/', (req, res) => {
         res.render('index');
-    });
-
-    app.get('/todo', (req, res) => {
-        let myTodo = [todoZero, todoOne];
-        res.json(myTodo);
-    });
-
-    app.get('/todo/:id', (req, res) => {
-        
-        console.log(`Requesting Todo list by the id of: ${req.params.id}`);
-        res.json(fakeTodoDatabaseCollection[req.params.id]);
     });
 
     app.post('/task', (req, res) => {
@@ -33,29 +22,6 @@ export default (app) => {
             else {
                 res.json(err);
             }
-
-            
-        });
-    });
-
-    app.post('/task/:id/subtasklist', (req, res) => {
-        createSubTaskList(req.body, (err, data) => {
-            if(!err){
-                console.log(data);
-            }
-
-            res.json(data);
-        });
-    });
-
-    app.post('/task/subtasklist?completed', (req, res) => {
-
-        createSubTaskList(req.body, req.params.query, (err, data) => {
-            if(!err){
-                console.log(data);
-            }
-
-            res.json(data);
         });
     });
 
@@ -69,5 +35,53 @@ export default (app) => {
             res.json(data);
         });
     });
+
+    app.get('/users', (req, res) => {
+        UserService.getAllUsers((err, users) => {
+            if(users){
+                // console.log('USERS! : ', users); // debugging purposes
+                res.json({users});
+            }
+            else {
+                res.statusCode(400);
+                res.send('Error!');
+            }
+        });
+    });
+
+    app.put('/users/:id/task', (req, res) => {
+        console.log('Is our ID there?', req.params.id);
+        console.log('Is our correct task there?', req.body);
+        UserService.push(req.params.id, req.body, (err, modifiedObject) => {
+            if(!err){
+                res.json(modifiedObject);
+            }
+            else {
+                res.json({error: 'There was an error!', data: null});
+            }
+        });
+    });
+
+    app.put('/users/:id/todoList', (req, res) => {
+        console.log('Is our ID there?', req.params.id);
+        console.log('Is our correct todoList there?', req.body);
+        UserService.updateTodoList(req.params.id, req.body, (err, modifiedObject) => {
+            if(!err){
+                res.json(modifiedObject);
+            }
+            else {
+                res.json({error: 'There was an error!', data: null});
+            }
+        });
+    });
+
+    app.get('/users/:id/test', (req, res) => {
+        console.log('Is our ID there?', req.params.id);
+        UserService.getAllUserFriends(req.params.id, (err, data) => {
+            res.json({error: err, data: data});
+        });
+    });
+
+    
 
 }
